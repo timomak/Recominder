@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Trainer {
+struct Trainer: Encodable {
     let name: String
     let age: String
     let pokemon: [String]
@@ -18,7 +18,38 @@ struct Trainer {
         self.age = json["age"] as? String ?? "No Age"
         self.pokemon = json["pokemon"] as? [String] ?? ["No pokemon"]
     }
+    
+    func makeJson() -> [String:AnyObject] {
+        return ["name":name as AnyObject, "age":age as AnyObject, "pokemon":pokemon as AnyObject]
+    }
+    
+    func makeString() -> String {
+        var dataString = "{\"name\":\"\(name)\", \"age\":\"\(age)\", \"pokemon\": ["
+        for poke in pokemon{
+            dataString += "\"" + poke + "\","
+        }
+        dataString.removeLast()
+        dataString += "]}"
+        return dataString
+    }
 }
+
+
+//struct Dog: Codable {
+//    var name: String
+//    var owner: String
+//}
+//
+//// Encode
+//let dog = Dog(name: "Rex", owner: "Etgar")
+//
+//let jsonEncoder = JSONEncoder()
+//let jsonData = try jsonEncoder.encode(dog)
+//let json = String(data: jsonData, encoding: String.Encoding.utf16)
+//
+//// Decode
+//let jsonDecoder = JSONDecoder()
+//let dog = try jsonDecoder.decode(Dog.self, from: jsonData)
 
 class MainViewController: UIViewController {
 
@@ -42,25 +73,13 @@ class MainViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         view.addSubview(text)
         text.centerOfView(to: view)
-        
-//        let jsonString = "http://localhost:3000/"
-//
-//        guard let url = URL(string: jsonString) else {return}
-//
-//        URLSession.shared.dataTask(with: url) { (data, response, error) in
-//            // Check error
-//
-//            // Do stuff
-//            guard let data = data else {return}
-//
-//            let dataAsString = String(data: data, encoding: .utf8)
-//            print(dataAsString)
-//        }.resume()
 
         httpRequest(completion: { (trainerArray) in
             self.trainers = trainerArray
             self.text.text = "\(self.trainers[0].name) has \(self.trainers[0].pokemon.count) pokemon"
+            self.postJson(trainers: self.trainers)
         })
+        
     }
     private func httpRequest(completion : @escaping(([Trainer]) -> ())) {
 
@@ -100,6 +119,55 @@ class MainViewController: UIViewController {
                 print(jsonError.localizedDescription)
             }
         })
+        task.resume()
+    }
+    
+    func postJson(trainers: [Trainer]) {
+        // prepare json data
+//        let json: [[String: Any]] = trainer as! [[String: Any]]
+
+//        let jsonEncoder = JSONEncoder()
+//        let jsonData = try? jsonEncoder.encode(trainer)
+//        let json = String(data: jsonData!, encoding: String.Encoding.utf8)
+//        print(json!)
+//        print(trainer.makeJson())
+//        print(trainer.makeJson())
+//        let jsonData = try? JSONSerialization.data(withJSONObject: trainer.makeJson(), options: .prettyPrinted)
+        
+//        let jsonData = trainer.makeString().data(using: .utf8, allowLossyConversion: false)
+
+            let jsonData = try? JSONEncoder().encode(trainers)
+        let jsonString = String(data: jsonData!, encoding: .utf8)!
+            print(jsonString) // [{"sentence":"Hello world","lang":"en"},{"sentence":"Hallo Welt","lang":"de"}]
+            
+            // and decode it back
+//        let decodedSentences = try? JSONDecoder().decode([Trainer].self, from: jsonData!)
+//            print(decodedSentences)
+    
+        
+//        print(trainer.makeString())
+        
+        // create post request
+        let url = URL(string: "http://localhost:3000/post")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        // insert json data to the request
+        request.httpBody = jsonData
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                print(error?.localizedDescription ?? "No data")
+                return
+            }
+            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+            
+            
+            if let responseJSON = responseJSON as? [String: Any] {
+                print(responseJSON)
+            }
+        }
+        
         task.resume()
     }
     
