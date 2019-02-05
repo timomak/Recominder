@@ -122,35 +122,17 @@ class MainViewController: UIViewController {
         task.resume()
     }
     
-    func postJson(trainers: [Trainer]) {
-        // prepare json data
-//        let json: [[String: Any]] = trainer as! [[String: Any]]
-
-//        let jsonEncoder = JSONEncoder()
-//        let jsonData = try? jsonEncoder.encode(trainer)
-//        let json = String(data: jsonData!, encoding: String.Encoding.utf8)
-//        print(json!)
-//        print(trainer.makeJson())
-//        print(trainer.makeJson())
-//        let jsonData = try? JSONSerialization.data(withJSONObject: trainer.makeJson(), options: .prettyPrinted)
-        
-//        let jsonData = trainer.makeString().data(using: .utf8, allowLossyConversion: false)
-
-            let jsonData = try? JSONEncoder().encode(trainers)
-        let jsonString = String(data: jsonData!, encoding: .utf8)!
-            print(jsonString) // [{"sentence":"Hello world","lang":"en"},{"sentence":"Hallo Welt","lang":"de"}]
-            
-            // and decode it back
-//        let decodedSentences = try? JSONDecoder().decode([Trainer].self, from: jsonData!)
-//            print(decodedSentences)
     
-        
-//        print(trainer.makeString())
+    func postJson(trainers: [Trainer]) {
+        let jsonData = try? JSONEncoder().encode(trainers)
+        let jsonString = String(data: jsonData!, encoding: .utf8)!
+            print(jsonString)
         
         // create post request
         let url = URL(string: "http://localhost:3000/post")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         
         // insert json data to the request
         request.httpBody = jsonData
@@ -163,7 +145,7 @@ class MainViewController: UIViewController {
             let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
             
             
-            if let responseJSON = responseJSON as? [String: Any] {
+            if let responseJSON = responseJSON as? [String: [String: Any]] {
                 print(responseJSON)
             }
         }
