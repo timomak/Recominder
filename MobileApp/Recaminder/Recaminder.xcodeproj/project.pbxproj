@@ -15,6 +15,8 @@
 		F374402E2203BE3B00F06EE8 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F374402D2203BE3B00F06EE8 /* Extensions.swift */; };
 		F37440342203BED800F06EE8 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37440332203BED800F06EE8 /* NetworkManager.swift */; };
 		F374403822040C2400F06EE8 /* HomeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F374403722040C2400F06EE8 /* HomeKit.framework */; };
+		F3891E66220AB74200C11DFA /* Trainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3891E65220AB74200C11DFA /* Trainer.swift */; };
+		F3891E68220AB76E00C11DFA /* Health.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3891E67220AB76E00C11DFA /* Health.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +31,8 @@
 		F37440332203BED800F06EE8 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		F374403522040C2400F06EE8 /* Recaminder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Recaminder.entitlements; sourceTree = "<group>"; };
 		F374403722040C2400F06EE8 /* HomeKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HomeKit.framework; path = System/Library/Frameworks/HomeKit.framework; sourceTree = SDKROOT; };
+		F3891E65220AB74200C11DFA /* Trainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trainer.swift; sourceTree = "<group>"; };
+		F3891E67220AB76E00C11DFA /* Health.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Health.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +92,8 @@
 		F37440302203BE9C00F06EE8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				F3891E65220AB74200C11DFA /* Trainer.swift */,
+				F3891E67220AB76E00C11DFA /* Health.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -193,9 +199,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				F37440342203BED800F06EE8 /* NetworkManager.swift in Sources */,
+				F3891E68220AB76E00C11DFA /* Health.swift in Sources */,
 				F374401E2203B30D00F06EE8 /* MainViewController.swift in Sources */,
 				F374402E2203BE3B00F06EE8 /* Extensions.swift in Sources */,
 				F374401C2203B30D00F06EE8 /* AppDelegate.swift in Sources */,
+				F3891E66220AB74200C11DFA /* Trainer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
