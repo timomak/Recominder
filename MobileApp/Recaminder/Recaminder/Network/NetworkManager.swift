@@ -10,16 +10,27 @@ import UIKit
 
 class NetworkManager {
     let urlSession = URLSession.shared
-    var baseURL = "http://localhost:3000/"
+    var baseURL = "https://recominder-api.herokuapp.com/api/auth"
 
     
     enum EndPoints {
         case health
+        case signup
+        case login
+        case healthKitData
         
         func getPath() -> String {
             switch self {
             case .health:
                 return "/"
+            case .signup:
+                // This is a post route. Email & Password
+                return "/register"
+            case .login:
+                // This is a post route. Email & Password
+                return "/login"
+            case .healthKitData:
+                return "/data"
             }
         }
         
@@ -27,16 +38,21 @@ class NetworkManager {
             return "GET"
         }
         
+        func postHTTPMethod() -> String {
+            return "POST"
+        }
+        
         func getHeaders() -> [String: String] {
             return [
                 "Accept": "application/json",
                 "Content-Type": "application/json",
-//                "Host": "http://localhost:3000/"
+//                "nToken": "\()"
+//                "Host": "https://recominder-api.herokuapp.com/api/auth"
             ]
         }
     }
     
-    private func makeRequest(for endPoint: EndPoints) -> URLRequest {
+    private func makeGetRequest(for endPoint: EndPoints) -> URLRequest {
         let path = endPoint.getPath()
         let fullURL = URL(string: baseURL)!
         var request = URLRequest(url: fullURL)
@@ -45,6 +61,17 @@ class NetworkManager {
         
         return request
     }
+    
+    private func makePostRequest(for endPoint: EndPoints) -> URLRequest {
+        let path = endPoint.getPath()
+        let fullURL = URL(string: baseURL.appending(path))!
+        var request = URLRequest(url: fullURL)
+        request.httpMethod = endPoint.postHTTPMethod()
+        request.allHTTPHeaderFields = endPoint.getHeaders()
+        
+        return request
+    }
+    
     
     enum Result<T> {
         case success(T)
@@ -57,7 +84,7 @@ class NetworkManager {
     }
     
     func getHealth(_ completion: @escaping (Result<Health>) -> Void) {
-        let postsRequest = makeRequest(for: .health)
+        let postsRequest = makeGetRequest(for: .health)
         let task = urlSession.dataTask(with: postsRequest) { data, response, error in
             // Check for errors.
             if let error = error {
@@ -79,6 +106,83 @@ class NetworkManager {
             // Return the result with the completion handler.
             DispatchQueue.main.async {
                 completion(Result.success(result))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    func signUpPost(_ email: String,_ password: String,_ completion: @escaping (Result<String>) -> Void) {
+        var signupRequest = makePostRequest(for: .signup)
+        
+        let data = ["email":"\(email)","password":"\(password)"]
+        let jsonData = try? JSONEncoder().encode(data)
+//        let jsonString = String(data: jsonData!, encoding: .utf8)!
+        
+        signupRequest.httpBody = jsonData
+        
+        let task = urlSession.dataTask(with: signupRequest) { data, response, error in
+            // Check for errors.
+            if let error = error {
+                return completion(Result.failure(error))
+            }
+            
+            // Check to see if there is any data that was retrieved.
+            guard let data = data else {
+                return completion(Result.failure(EndPointError.noData))
+            }
+            
+            // Attempt to decode the data.
+            guard let result = try? JSONSerialization.jsonObject(with: data, options: []) else {
+                return completion(Result.failure(EndPointError.couldNotParse))
+            }
+            
+            
+            if let result = result as? [String: Any] {
+                print("response Sign up",result)
+            }
+            
+            // Return the result with the completion handler.
+            DispatchQueue.main.async {
+                completion(Result.success("WORKED Sign up"))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    func logInPost(_ email: String,_ password: String,_ completion: @escaping (Result<String>) -> Void) {
+        var loginRequest = makePostRequest(for: .login)
+        
+        let data = ["email":"\(email)","password":"\(password)"]
+        let jsonData = try? JSONEncoder().encode(data)
+        
+        loginRequest.httpBody = jsonData
+        
+        let task = urlSession.dataTask(with: loginRequest) { data, response, error in
+            // Check for errors.
+            if let error = error {
+                return completion(Result.failure(error))
+            }
+            
+            // Check to see if there is any data that was retrieved.
+            guard let data = data else {
+                return completion(Result.failure(EndPointError.noData))
+            }
+            
+            // Attempt to decode the data.
+            guard let result = try? JSONSerialization.jsonObject(with: data, options: []) else {
+                return completion(Result.failure(EndPointError.couldNotParse))
+            }
+            
+            
+            if let result = result as? [String: Any] {
+                print("response Login",result)
+            }
+            
+            // Return the result with the completion handler.
+            DispatchQueue.main.async {
+                completion(Result.success("WORKED Log In"))
             }
         }
         

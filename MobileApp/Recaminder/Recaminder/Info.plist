@@ -14,9 +14,9 @@
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Share health and data</string>
+	<string>We will keep your data private. We&apos;re simply using machine learning to make estimates and recomendation to improve your health.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>Update health and data</string>
+	<string>I don&apos;t write any data to healthKit</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
