@@ -109,14 +109,23 @@ class MainViewController: UIViewController {
                 // Get Heart rate Data
                 self.getHeartRateData(completion: { (arrayOfHealthData) in
                     print(arrayOfHealthData!)
-//                    let heartRateUnit:HKUnit = HKUnit(from: "count/min")
-//                    var allHeartRateDataArray: [HeartRate] = []
-//                    
-//                    for data in arrayOfHealthData! {
-//                        let heartModel = HeartRate(rate: data.quantity.doubleValue(for: heartRateUnit), quantityType: String(data.quantityType), startDate: <#T##Date#>, endDate: <#T##Date#>, metadata: <#T##String#>, uuid: <#T##String#>, source: <#T##String#>, device: <#T##String#>)
-//                    }
-//                    
-//                    var allHeartRateData = HeartRateData(data: allHeartRateDataArray)
+                    let heartRateUnit:HKUnit = HKUnit(from: "count/min")
+                    
+                    var allHeartRateDataArray: [HeartRate] = []
+
+                    for data in arrayOfHealthData! {
+                        let heartModel = HeartRate(rate: data.quantity.doubleValue(for: heartRateUnit), quantityType: "\(data.quantityType)", startDate: data.startDate, endDate: data.endDate, metadata: "\(data.metadata)", uuid: "\(data.uuid)", source: "\(data.source)", device: "\(data.device)")
+                        allHeartRateDataArray.append(heartModel)
+                    }
+
+                    var allHeartRateData = HeartRateData(data: allHeartRateDataArray)
+                    
+                    print("---------\nAll Heart Data\n------------\n",allHeartRateData)
+                    
+                    
+                    let jsonData = try? JSONEncoder().encode(allHeartRateData)
+                    let jsonString = String(data: jsonData!, encoding: .utf8)!
+                    print("----------------\nData in JSON\n----------------\n",jsonString)
 //                    TODO: Pull data into struct model
 //                    let heartRateUnit:HKUnit = HKUnit(from: "count/min")
 //                    
