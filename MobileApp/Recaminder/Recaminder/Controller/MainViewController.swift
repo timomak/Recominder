@@ -6,6 +6,15 @@
 //  Copyright © 2019 Timofey Makhlay. All rights reserved.
 //
 
+// TODO: Clean up commented out (useless) code
+// TODO: Create a Heart Rate and Blood Pressure structs
+// TODO: Optimize Authorization
+// TODO: Split the functions into different views
+// TODO: Create front end
+// TODO: Remove redundunt actions like logging in every session
+// TODO: Perform A LOT of testing
+
+
 import UIKit
 import HealthKit
 
@@ -68,51 +77,88 @@ class MainViewController: UIViewController {
 //        })
         
     }
+    
+    func requestAuthorization()
+    {
+        /* Function to request Authorization to access user's HealthKit Data. If Authorized, it gets the data and uses struct to hold them. As a struct, it sends it to the database*/
+        
+        // Variables I'm trying to get from HealthKit
+        let heartRateType:HKQuantityType   = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!
+        
+        let bloodPressureSystolicType:HKQuantityType   = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureSystolic)!
+        
+        let bloodPressureDiastolicType:HKQuantityType   = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureDiastolic)!
+        
+        // Reading
+        let readingTypes:Set = Set( [heartRateType, bloodPressureSystolicType, bloodPressureDiastolicType] )
+        
+        // Writing (not writing any data)
+        //let writingTypes:Set = Set( [heartRateType, bloodPressureSystolicType, bloodPressureDiastolicType] )
+        
+        // Request Authorization for data.
+        healthStore.requestAuthorization(toShare: nil, read: readingTypes) { (success, error) -> Void in
+            
+            if error != nil
+            {
+                print("error: \(error?.localizedDescription ?? "Error while requesting HealthKit data")")
+            }
+            else if success
+            {
+                print("Authorized!")
+                
+                // Get Heart rate Data
+                self.getHeartRateData(completion: { (arrayOfHealthData) in
+                    print(arrayOfHealthData!)
+//                    let heartRateUnit:HKUnit = HKUnit(from: "count/min")
+//                    var allHeartRateDataArray: [HeartRate] = []
+//                    
+//                    for data in arrayOfHealthData! {
+//                        let heartModel = HeartRate(rate: data.quantity.doubleValue(for: heartRateUnit), quantityType: String(data.quantityType), startDate: <#T##Date#>, endDate: <#T##Date#>, metadata: <#T##String#>, uuid: <#T##String#>, source: <#T##String#>, device: <#T##String#>)
+//                    }
+//                    
+//                    var allHeartRateData = HeartRateData(data: allHeartRateDataArray)
+//                    TODO: Pull data into struct model
+//                    let heartRateUnit:HKUnit = HKUnit(from: "count/min")
+//                    
+//                    for sample in samples {
+//                        print("Heart Rate: \(sample.quantity.doubleValue(for: heartRateUnit))")
+//                        print("quantityType: \(sample.quantityType)")
+//                        print("Start Date: \(sample.startDate)")
+//                        print("End Date: \(sample.endDate)")
+//                        print("Metadata: \(sample.metadata)")
+//                        print("UUID: \(sample.uuid)")
+//                        print("Source: \(sample.sourceRevision)")
+//                        print("Device: \(sample.device)")
+//                        print("---------------------------------\n")
+//                    }
+                })
+            }
+        }
+    }
+    
+    
 
     @objc func allowHealthKitButtonPressed() {
         print("button pressed")
-        let healthKitTypes: Set = [
-            // access step count
-//            HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!,
-            HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.stepCount)!
-            
-//            HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureSystolic)!
-        ]
-        healthStore.requestAuthorization(toShare: healthKitTypes, read: healthKitTypes) { (success, error) in
-            print("authrised???")
-            print("success: ", success)
-        }
-        healthStore.requestAuthorization(toShare: healthKitTypes, read: healthKitTypes) { (bool, error) in
-            if let e = error {
-                print("oops something went wrong during authorisation \(e.localizedDescription)")
-            } else {
-                print("User has completed the authorization flow")
-                self.getHealthData(completion: { (heartRate) in
-                    print("heart rate: ", heartRate)
-                    self.text.text = "heart rate: " + String(heartRate)
-                    })
-                
-                // Handle all health data
-//                self.queryHealthData()
-            }
-        }
+        requestAuthorization()
     }
     
-    // Check if network manager is working.
-    func updateFeed() {
-        networkManager.getHealth() { result in
-            switch result {
-            case let .success(result):
-                self.health = result
-                print(self.health)
-                self.text.text = "hi"
-                self.text.text = "Blood Pressure: \(self.health!.bloodPressure)\nHeart Rate: \(self.health!.heartRate)\nDrink Water: \(self.health!.drinkAmount) liters\nWorkout Time: \(self.health!.workoutTime)pm\n"
-            case let .failure(error):
-                print(error)
-            }
-        }
-    }
+    // TODO: Get Function to pull processed data from database
+//    func updateFeed() {
+//        networkManager.getHealth() { result in
+//            switch result {
+//            case let .success(result):
+//                self.health = result
+//                print(self.health)
+//                self.text.text = "hi"
+//                self.text.text = "Blood Pressure: \(self.health!.bloodPressure)\nHeart Rate: \(self.health!.heartRate)\nDrink Water: \(self.health!.drinkAmount) liters\nWorkout Time: \(self.health!.workoutTime)pm\n"
+//            case let .failure(error):
+//                print(error)
+//            }
+//        }
+//    }
     
+    // SignUp Netowking method. Will POST email and password to sign up.
     func signUp(_ email: String, _ password: String) {
         networkManager.signUpPost(email, password) { result in
             switch result {
@@ -124,6 +170,7 @@ class MainViewController: UIViewController {
         }
     }
     
+    // Login Networking Method. Will POST email and password to Login.
     func logIn(_ email: String, _ password: String) {
         networkManager.logInPost(email, password) { result in
             switch result {
@@ -135,51 +182,34 @@ class MainViewController: UIViewController {
         }
     }
     
-    func queryHealthData() {
-        print("beginning to get helthkit data")
-        let sampleQuery = HKSampleQuery(sampleType: HKObjectType.quantityType(forIdentifier: .height)!, predicate: nil, limit: HKObjectQueryNoLimit, sortDescriptors: nil, resultsHandler: { (_ HKSampleQuery, samplesOrNil, error) in
+    func getHeartRateData(completion: @escaping (_ heartRate: [HKQuantitySample]?) -> Void) {
+        /* Once Authorized to get data, this function will locate and pull the data. */
+        
+        // Date to end location
+        //let now = Date()
+        
+        // Date to start location
+        //let startOfDay = Calendar.current.startOfDay(for: now)
+        
+        //Predicate (won't be needing it to get all data. Useful when looking for specific data)
+        //let predicate = HKQuery.predicateForSamples(withStart: nil, end: nil, options: .strictEndDate)
+        
+        // Tell what type of data it's looking for.
+        let dataQuery = HKSampleQuery.init(sampleType: HKObjectType.quantityType(forIdentifier: .heartRate)!, predicate: nil, limit: HKObjectQueryNoLimit, sortDescriptors: nil, resultsHandler: { (sampleQuery, samplesOrNil, error) in
             
-            guard let samples = samplesOrNil as? [HKSample] else {
+            // Check if data is of right type
+            guard let samples = samplesOrNil as? [HKQuantitySample] else {
                 print(error, "deosn't work as quantity type.")
                 return
             }
-            print(samples)
-//            self.allSamples = samples
-//            print(self.allSamples[0] as? HKQuantityTypeIdentifierHeight)
-            
             
             DispatchQueue.main.async {
-                // do something when done
-                print("everything worked as expected")
+                // Return Heart Rate data when done.
+                completion(samples)
             }
         })
-        healthStore.execute(sampleQuery)
-    }
-    
-    func getHealthData(completion: @escaping (Double) -> Void) {
-        
-        let stepsQuantityType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
-        
-        let now = Date()
-        let startOfDay = Calendar.current.startOfDay(for: now)
-        let predicate = HKQuery.predicateForSamples(withStart: nil, end: nil, options: .strictEndDate)
-        
-        let query = HKStatisticsQuery(quantityType: stepsQuantityType, quantitySamplePredicate: predicate, options: .cumulativeSum) { (_, result, error) in
-            var resultCount = 0.0
-            guard let result = result else {
-                print("Failed to fetch heart rate")
-                completion(resultCount)
-                return
-            }
-            if let sum = result.sumQuantity() {
-                resultCount = sum.doubleValue(for: HKUnit.count())
-            }
-            
-            DispatchQueue.main.async {
-                completion(resultCount)
-            }
-        }
-        healthStore.execute(query)
+        // Runs the data query to get data
+        healthStore.execute(dataQuery)
     }
 
     // Keeping this code for future reference.
@@ -226,39 +256,39 @@ class MainViewController: UIViewController {
 //
 //
     
-    func postJson() {
-        let data = [
-            "email":"test@gmail.com",
-            "password":"test12"
-                    ]
-        let jsonData = try? JSONEncoder().encode(data)
-        let jsonString = String(data: jsonData!, encoding: .utf8)!
-//        print(jsonString)
-        
-        // create post request
-        let url = URL(string: "https://recominder-api.herokuapp.com/api/auth/login")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        
-        // insert json data to the request
-        request.httpBody = jsonData
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data, error == nil else {
-                print(error?.localizedDescription ?? "No data")
-                return
-            }
-            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-            
-            
-            if let responseJSON = responseJSON as? [String: Any] {
-                print("response ",responseJSON)
-            }
-        }
-        
-        task.resume()
-    }
+//    func postJson() {
+//        let data = [
+//            "email":"test@gmail.com",
+//            "password":"test12"
+//                    ]
+//        let jsonData = try? JSONEncoder().encode(data)
+//        let jsonString = String(data: jsonData!, encoding: .utf8)!
+////        print(jsonString)
+//
+//        // create post request
+//        let url = URL(string: "https://recominder-api.herokuapp.com/api/auth/login")!
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "POST"
+//        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+//
+//        // insert json data to the request
+//        request.httpBody = jsonData
+//
+//        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+//            guard let data = data, error == nil else {
+//                print(error?.localizedDescription ?? "No data")
+//                return
+//            }
+//            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+//
+//
+//            if let responseJSON = responseJSON as? [String: Any] {
+//                print("response ",responseJSON)
+//            }
+//        }
+//
+//        task.resume()
+//    }
 //    func postJson(trainers: [Trainer]) {
 //        let jsonData = try? JSONEncoder().encode(trainers)
 //        let jsonString = String(data: jsonData!, encoding: .utf8)!
