@@ -8,17 +8,28 @@
 
 import UIKit
 
+
+struct HealthKitData: Encodable {
+    var heartRateData: [HeartRate]
+    // TODO: Finish other models
+    //    var bloodPressureData:
+    
+    init(heartRateData:[HeartRate]) {
+        self.heartRateData = heartRateData
+    }
+}
+
 struct HeartRate: Encodable {
     var rate: Double
     var quantityType: String
-    var startDate: Date
-    var endDate: Date
+    var startDate: String
+    var endDate: String
     var metadata: String
     var uuid: String
     var source: String
     var device: String
     
-    init(rate: Double, quantityType: String, startDate: Date, endDate: Date, metadata: String, uuid: String, source: String, device: String) {
+    init(rate: Double, quantityType: String, startDate: String, endDate: String, metadata: String, uuid: String, source: String, device: String) {
         self.rate = rate
         self.quantityType = quantityType
         self.startDate = startDate
@@ -27,14 +38,6 @@ struct HeartRate: Encodable {
         self.uuid = uuid
         self.source = source
         self.device = device
-    }
-}
-
-struct HeartRateData: Encodable {
-    var data: [HeartRate]
-    
-    init(data:[HeartRate]) {
-        self.data = data
     }
 }
 

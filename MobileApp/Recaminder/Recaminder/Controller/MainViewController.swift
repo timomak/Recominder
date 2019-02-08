@@ -110,36 +110,28 @@ class MainViewController: UIViewController {
                 self.getHeartRateData(completion: { (arrayOfHealthData) in
                     print(arrayOfHealthData!)
                     let heartRateUnit:HKUnit = HKUnit(from: "count/min")
-                    
+                    let df = DateFormatter()
+                    df.dateFormat = "yyyy-MM-dd HH:mm:ss"
                     var allHeartRateDataArray: [HeartRate] = []
 
                     for data in arrayOfHealthData! {
-                        let heartModel = HeartRate(rate: data.quantity.doubleValue(for: heartRateUnit), quantityType: "\(data.quantityType)", startDate: data.startDate, endDate: data.endDate, metadata: "\(data.metadata)", uuid: "\(data.uuid)", source: "\(data.source)", device: "\(data.device)")
+                        let heartModel = HeartRate(rate: data.quantity.doubleValue(for: heartRateUnit), quantityType: "\(data.quantityType)", startDate: df.string(from: data.startDate), endDate: df.string(from: data.endDate), metadata: "\(data.metadata)", uuid: "\(data.uuid)", source: "\(data.source)", device: "\(data.device)")
                         allHeartRateDataArray.append(heartModel)
                     }
 
-                    var allHeartRateData = HeartRateData(data: allHeartRateDataArray)
+                    var allHeartRateData = HealthKitData(heartRateData: allHeartRateDataArray)
                     
                     print("---------\nAll Heart Data\n------------\n",allHeartRateData)
                     
                     
-                    let jsonData = try? JSONEncoder().encode(allHeartRateData)
+                    let jsonData = try? JSONEncoder().encode(allHeartRateData.heartRateData)
                     let jsonString = String(data: jsonData!, encoding: .utf8)!
                     print("----------------\nData in JSON\n----------------\n",jsonString)
-//                    TODO: Pull data into struct model
-//                    let heartRateUnit:HKUnit = HKUnit(from: "count/min")
-//                    
-//                    for sample in samples {
-//                        print("Heart Rate: \(sample.quantity.doubleValue(for: heartRateUnit))")
-//                        print("quantityType: \(sample.quantityType)")
-//                        print("Start Date: \(sample.startDate)")
-//                        print("End Date: \(sample.endDate)")
-//                        print("Metadata: \(sample.metadata)")
-//                        print("UUID: \(sample.uuid)")
-//                        print("Source: \(sample.sourceRevision)")
-//                        print("Device: \(sample.device)")
-//                        print("---------------------------------\n")
-//                    }
+                    
+                    // TODO: push data
+                    self.networkManager.postHeartData(jsonData!, { (response) in
+                        print(response)
+                    })
                 })
             }
         }
@@ -184,6 +176,7 @@ class MainViewController: UIViewController {
         networkManager.logInPost(email, password) { result in
             switch result {
             case let .success(result):
+                print(result)
                 self.text.text = result
             case let .failure(error):
                 print(error)

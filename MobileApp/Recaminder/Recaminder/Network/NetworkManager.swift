@@ -144,7 +144,7 @@ class NetworkManager {
             
             // Return the result with the completion handler.
             DispatchQueue.main.async {
-                completion(Result.success("WORKED Sign up"))
+                completion(Result.success("WORKED SIGN UP"))
             }
         }
         
@@ -182,7 +182,45 @@ class NetworkManager {
             
             // Return the result with the completion handler.
             DispatchQueue.main.async {
-                completion(Result.success("WORKED Log In"))
+                completion(Result.success("WORKED LOG IN"))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    func postHeartData(_ jsonData: Data,_ completion: @escaping (Result<String>) -> Void) {
+        var loginRequest = makePostRequest(for: .healthKitData)
+        
+        loginRequest.httpBody = jsonData
+
+        let task = urlSession.dataTask(with: loginRequest) { data, response, error in
+            // Check for errors.
+            if let error = error {
+                return completion(Result.failure(error))
+            }
+            
+            // Check to see if there is any data that was retrieved.
+            guard let data = data else {
+                return completion(Result.failure(EndPointError.noData))
+            }
+
+//            // Attempt to decode the data.
+            guard let result = try? JSONSerialization.jsonObject(with: data, options: []) else {
+                return completion(Result.failure(EndPointError.couldNotParse))
+            }
+            
+            if let result = result as? [String: Any] {
+                print("Response: ",result)
+            }
+//
+//            if let result = result as? [String: Any] {
+//                print("response Login",result)
+//            }
+            
+            // Return the result with the completion handler.
+            DispatchQueue.main.async {
+                completion(Result.success("WORKED DATA PUSH"))
             }
         }
         

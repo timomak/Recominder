@@ -17,7 +17,7 @@
 		F37440342203BED800F06EE8 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37440332203BED800F06EE8 /* NetworkManager.swift */; };
 		F3891E66220AB74200C11DFA /* Trainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3891E65220AB74200C11DFA /* Trainer.swift */; };
 		F3891E68220AB76E00C11DFA /* Health.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3891E67220AB76E00C11DFA /* Health.swift */; };
-		F391C088220CCF1A00D47CED /* HeartRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F391C087220CCF1A00D47CED /* HeartRate.swift */; };
+		F391C088220CCF1A00D47CED /* HealthKitData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F391C087220CCF1A00D47CED /* HealthKitData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,7 +34,7 @@
 		F374403522040C2400F06EE8 /* Recaminder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Recaminder.entitlements; sourceTree = "<group>"; };
 		F3891E65220AB74200C11DFA /* Trainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trainer.swift; sourceTree = "<group>"; };
 		F3891E67220AB76E00C11DFA /* Health.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Health.swift; sourceTree = "<group>"; };
-		F391C087220CCF1A00D47CED /* HeartRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartRate.swift; sourceTree = "<group>"; };
+		F391C087220CCF1A00D47CED /* HealthKitData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,7 +96,7 @@
 			children = (
 				F3891E65220AB74200C11DFA /* Trainer.swift */,
 				F3891E67220AB76E00C11DFA /* Health.swift */,
-				F391C087220CCF1A00D47CED /* HeartRate.swift */,
+				F391C087220CCF1A00D47CED /* HealthKitData.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -208,7 +208,7 @@
 				F3891E68220AB76E00C11DFA /* Health.swift in Sources */,
 				F374401E2203B30D00F06EE8 /* MainViewController.swift in Sources */,
 				F374402E2203BE3B00F06EE8 /* Extensions.swift in Sources */,
-				F391C088220CCF1A00D47CED /* HeartRate.swift in Sources */,
+				F391C088220CCF1A00D47CED /* HealthKitData.swift in Sources */,
 				F374401C2203B30D00F06EE8 /* AppDelegate.swift in Sources */,
 				F3891E66220AB74200C11DFA /* Trainer.swift in Sources */,
 			);

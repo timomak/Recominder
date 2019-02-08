@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Trainer: Encodable {
+struct Trainer {
     let name: String
     let age: String
     let pokemon: [String]
