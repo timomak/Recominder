@@ -308,7 +308,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate  {
             case let .failedSigning(result):
                 print("Failed Log in: ", result)
                 self.displayError("\(result)")
-                self.errorLabel.isHidden = false
             case let .failure(error):
                 print(error)
             }
