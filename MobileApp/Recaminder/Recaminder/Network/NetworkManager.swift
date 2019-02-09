@@ -75,6 +75,7 @@ class NetworkManager {
     
     enum Result<T> {
         case success(T)
+        case failedSigning(T)
         case failure(Error)
     }
     
@@ -139,7 +140,10 @@ class NetworkManager {
             
             
             if let result = result as? [String: Any] {
-                print("response Sign up",result)
+                
+                // TODO: Find a way to check for this failure.
+                completion(Result.failedSigning("\(result)"))
+                
             }
             
             // Return the result with the completion handler.
@@ -177,7 +181,8 @@ class NetworkManager {
             
             
             if let result = result as? [String: Any] {
-                print("response Login",result)
+                // TODO: Find a way to check for this failure.
+                completion(Result.failedSigning("\(result)"))
             }
             
             // Return the result with the completion handler.

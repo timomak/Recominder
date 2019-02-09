@@ -167,6 +167,8 @@ class MainViewController: UIViewController {
                     self.text.text = result
             case let .failure(error):
                 print(error)
+            case .failedSigning(_): break
+                // Test code
             }
         }
     }
@@ -180,6 +182,8 @@ class MainViewController: UIViewController {
                 self.text.text = result
             case let .failure(error):
                 print(error)
+            case .failedSigning(_): break
+                // test code
             }
         }
     }
