@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F304EBBC220E8D3B004C88B4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F304EBBB220E8D3B004C88B4 /* LoginViewController.swift */; };
 		F3051CB3220BE6730080775E /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3051CB2220BE6730080775E /* HealthKit.framework */; };
 		F374401C2203B30D00F06EE8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F374401B2203B30D00F06EE8 /* AppDelegate.swift */; };
 		F374401E2203B30D00F06EE8 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F374401D2203B30D00F06EE8 /* MainViewController.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F304EBBB220E8D3B004C88B4 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		F3051CB2220BE6730080775E /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		F37440182203B30D00F06EE8 /* Recaminder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Recaminder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F374401B2203B30D00F06EE8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				F374401D2203B30D00F06EE8 /* MainViewController.swift */,
+				F304EBBB220E8D3B004C88B4 /* LoginViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -208,6 +211,7 @@
 				F3891E68220AB76E00C11DFA /* Health.swift in Sources */,
 				F374401E2203B30D00F06EE8 /* MainViewController.swift in Sources */,
 				F374402E2203BE3B00F06EE8 /* Extensions.swift in Sources */,
+				F304EBBC220E8D3B004C88B4 /* LoginViewController.swift in Sources */,
 				F391C088220CCF1A00D47CED /* HealthKitData.swift in Sources */,
 				F374401C2203B30D00F06EE8 /* AppDelegate.swift in Sources */,
 				F3891E66220AB74200C11DFA /* Trainer.swift in Sources */,
