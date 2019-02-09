@@ -124,7 +124,7 @@ class MainViewController: UIViewController {
                     print("---------\nAll Heart Data\n------------\n",allHeartRateData)
                     
                     
-                    let jsonData = try? JSONEncoder().encode(allHeartRateData.heartRateData)
+                    let jsonData = try? JSONEncoder().encode(allHeartRateData)
                     let jsonString = String(data: jsonData!, encoding: .utf8)!
                     print("----------------\nData in JSON\n----------------\n",jsonString)
                     

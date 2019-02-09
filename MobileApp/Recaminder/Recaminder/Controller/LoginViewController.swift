@@ -105,7 +105,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate  {
         button.setTitle("Continue", for: .normal)
         button.setTitleColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), for: .normal)
         button.titleLabel?.font = UIFont(name: "AvenirNext-Bold", size: 30)
-        button.backgroundColor = #colorLiteral(red: 0.9599618316, green: 0.275388211, blue: 0.4092237353, alpha: 1)
         button.layer.cornerRadius = 15
         button.addTarget(self, action: #selector(continueButtonPressed), for: .touchUpInside)
         return button
@@ -136,9 +135,28 @@ class LoginViewController: UIViewController, UITextFieldDelegate  {
         return title
     }()
     
+    // Background Image
+    private var background: UIImageView = {
+        var newImage = UIImageView()
+        newImage.image = #imageLiteral(resourceName: "signupscreen")
+        return newImage
+    }()
+    
+    // Continue Button image
+    private var continueButtonImage: UIImageView = {
+        var newImage = UIImageView()
+        newImage.image = #imageLiteral(resourceName: "signupbox")
+        return newImage
+    }()
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = #colorLiteral(red: 0.8250355721, green: 0.7137643695, blue: 0.7113270164, alpha: 1)
+        // adding background
+        view.addSubview(background)
+        background.fillSuperview()
+        
         
         // Adding extension to simplify typing
         hideKeyboardWhenTappedAround()
@@ -164,11 +182,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate  {
         view.addSubview(logInOrSignUpButton)
         
         // Continue Button
+        view.addSubview(continueButtonImage)
         view.addSubview(continueButton)
         
         
         // Email constrains
-        emailViewContainer.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, padding: .init(top: 250, left: 40, bottom: 0, right: 40), size: .init(width: 0, height: 50))
+        emailViewContainer.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, padding: .init(top: 300, left: 40, bottom: 0, right: 40), size: .init(width: 0, height: 50))
         emailTextField.anchor(top: emailViewContainer.topAnchor, leading: emailViewContainer.leadingAnchor, bottom: emailViewContainer.bottomAnchor, trailing: emailViewContainer.trailingAnchor, padding: .init(top: 0, left: 5, bottom: 0, right: 5))
         
         
@@ -182,12 +201,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate  {
         logInOrSignUpButton.anchor(top: nil, leading: view.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.trailingAnchor)
         
         // Continue constrains
-        continueButton.anchor(top: emailViewContainer.bottomAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, padding: .init(top: 200, left: 50, bottom: 0, right: 50))
+        continueButtonImage.anchor(top: emailViewContainer.bottomAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor, padding: .init(top: 200, left: 60, bottom: 0, right: 60), size: .init(width: 0, height: 60))
+        continueButton.centerOfView(to: continueButtonImage)
         
         
         // Error message label
         view.addSubview(errorLabel)
-        errorLabel.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: emailViewContainer.topAnchor, trailing: view.trailingAnchor)
+        errorLabel.anchor(top: continueButton.bottomAnchor, leading: view.leadingAnchor, bottom: nil, trailing: view.trailingAnchor)
     }
     
     // Changing between Sign in and Log in

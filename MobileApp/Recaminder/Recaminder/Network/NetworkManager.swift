@@ -10,7 +10,7 @@ import UIKit
 
 class NetworkManager {
     let urlSession = URLSession.shared
-    var baseURL = "https://recominder-api.herokuapp.com/api/auth"
+    var baseURL = "https://recominder-api.herokuapp.com/api/auth/mobile-"
 
     
     enum EndPoints {
@@ -25,12 +25,13 @@ class NetworkManager {
                 return "/"
             case .signup:
                 // This is a post route. Email & Password
-                return "/register"
+                return "register"
             case .login:
                 // This is a post route. Email & Password
-                return "/login"
+                return "login"
             case .healthKitData:
-                return "/data"
+                // Send all healthKit data in one JSON
+                return "data"
             }
         }
         
@@ -209,14 +210,14 @@ class NetworkManager {
             guard let data = data else {
                 return completion(Result.failure(EndPointError.noData))
             }
-
+            print("data: ", data)
 //            // Attempt to decode the data.
             guard let result = try? JSONSerialization.jsonObject(with: data, options: []) else {
                 return completion(Result.failure(EndPointError.couldNotParse))
             }
             
             if let result = result as? [String: Any] {
-                print("Response: ",result)
+                print("\n\n------------------------\n\nResponse heart rate data: ",result)
             }
 //
 //            if let result = result as? [String: Any] {
