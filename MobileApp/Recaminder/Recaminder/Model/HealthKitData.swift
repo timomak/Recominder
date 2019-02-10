@@ -41,4 +41,25 @@ struct HeartRate: Encodable {
     }
 }
 
+struct HeightData: Encodable {
+    var height: Double
+    var quantityType: String
+    var startDate: String
+    var endDate: String
+    var metadata: String
+    var uuid: String
+    var source: String
+    var device: String
+    
+    init(height: Double, quantityType: String, startDate: String, endDate: String, metadata: String, uuid: String, source: String, device: String) {
+        self.height = height
+        self.quantityType = quantityType
+        self.startDate = startDate
+        self.endDate = endDate
+        self.metadata = metadata
+        self.uuid = uuid
+        self.source = source
+        self.device = device
+    }
+}
 

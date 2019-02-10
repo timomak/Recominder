@@ -138,7 +138,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate  {
     // Background Image
     private var background: UIImageView = {
         var newImage = UIImageView()
-        newImage.image = #imageLiteral(resourceName: "signupscreen")
+        newImage.image = #imageLiteral(resourceName: "loginscreen")
         return newImage
     }()
     
@@ -227,6 +227,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate  {
             confirmPasswordViewContainer.centerHorizontalOfView(to: emailViewContainer)
             confirmPasswordTextField.anchor(top: confirmPasswordViewContainer.topAnchor, leading: confirmPasswordViewContainer.leadingAnchor, bottom: confirmPasswordViewContainer.bottomAnchor, trailing: confirmPasswordViewContainer.trailingAnchor, padding: .init(top: 0, left: 5, bottom: 0, right: 5))
             
+            // Change background picture
+            background.image = #imageLiteral(resourceName: "signupscreen")
+            
         }
         else if isLoggingIn == false {
             logInOrSignUpButton.setTitle("Register?", for: .normal)
@@ -235,6 +238,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate  {
             // Removing password confirmation
             confirmPasswordViewContainer.removeFromSuperview()
             confirmPasswordTextField.removeFromSuperview()
+            
+            // Change background picture
+            background.image = #imageLiteral(resourceName: "loginscreen")
         }
     }
     

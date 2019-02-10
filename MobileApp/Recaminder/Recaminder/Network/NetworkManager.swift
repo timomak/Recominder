@@ -10,7 +10,7 @@ import UIKit
 
 class NetworkManager {
     let urlSession = URLSession.shared
-    var baseURL = "https://recominder-api.herokuapp.com/api/auth/mobile-"
+    var baseURL = "https://recominder-api.herokuapp.com/"
 
     
     enum EndPoints {
@@ -139,17 +139,20 @@ class NetworkManager {
                 return completion(Result.failure(EndPointError.couldNotParse))
             }
             
-            
-            if let result = result as? [String: Any] {
-                
-                // TODO: Find a way to check for this failure.
-                completion(Result.failedSigning("\(result)"))
-                
+            guard let response = result as? [String: Any] else {
+                completion(Result.failure(EndPointError.couldNotParse))
+                return
+            }
+            // TODO: Find a way to check for this failure.
+            guard let signupSuccess = response["userId"] else {
+                let failMessage = response["message"]
+                completion(Result.failedSigning("\(failMessage!)"))
+                return
             }
             
             // Return the result with the completion handler.
             DispatchQueue.main.async {
-                completion(Result.success("WORKED SIGN UP"))
+                completion(Result.success("\(signupSuccess)"))
             }
         }
         
@@ -180,15 +183,20 @@ class NetworkManager {
                 return completion(Result.failure(EndPointError.couldNotParse))
             }
             
-            
-            if let result = result as? [String: Any] {
-                // TODO: Find a way to check for this failure.
-                completion(Result.failedSigning("\(result)"))
+            guard let response = result as? [String: Any] else {
+                completion(Result.failure(EndPointError.couldNotParse))
+                return
+            }
+            // TODO: Find a way to check for this failure.
+            guard let loginSuccess = response["userId"] else {
+                let failMessage = response["message"]
+                completion(Result.failedSigning("\(failMessage)"))
+                return
             }
             
             // Return the result with the completion handler.
             DispatchQueue.main.async {
-                completion(Result.success("WORKED LOG IN"))
+                completion(Result.success("ID: \(loginSuccess)"))
             }
         }
         

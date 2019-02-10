@@ -89,8 +89,24 @@ class MainViewController: UIViewController {
         
         let bloodPressureDiastolicType:HKQuantityType   = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureDiastolic)!
         
+        let bodyMassType:HKQuantityType   = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!
+        
+        let bodyTemperatureType:HKQuantityType   = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyTemperature)!
+        
+        let activeEnergyBurnedType:HKQuantityType   = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.activeEnergyBurned)!
+        
+        let heightType:HKQuantityType   = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.height)!
+        
+        let leanBodyMassType:HKQuantityType   = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.leanBodyMass)!
+        
+        let respiratoryRateType:HKQuantityType   = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.respiratoryRate)!
+        
+        let restingHeartRateType:HKQuantityType   = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.restingHeartRate)!
+        
+        let stepCountType:HKQuantityType   = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.stepCount)!
+        
         // Reading
-        let readingTypes:Set = Set( [heartRateType, bloodPressureSystolicType, bloodPressureDiastolicType] )
+        let readingTypes:Set = Set([heartRateType, bloodPressureSystolicType, bloodPressureDiastolicType, bodyMassType, bodyTemperatureType, activeEnergyBurnedType, heightType, leanBodyMassType, respiratoryRateType, restingHeartRateType, stepCountType])
         
         // Writing (not writing any data)
         //let writingTypes:Set = Set( [heartRateType, bloodPressureSystolicType, bloodPressureDiastolicType] )
@@ -106,35 +122,58 @@ class MainViewController: UIViewController {
             {
                 print("Authorized!")
                 
-                // Get Heart rate Data
-                self.getHeartRateData(completion: { (arrayOfHealthData) in
-                    print(arrayOfHealthData!)
-                    let heartRateUnit:HKUnit = HKUnit(from: "count/min")
-                    let df = DateFormatter()
-                    df.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                    var allHeartRateDataArray: [HeartRate] = []
-
-                    for data in arrayOfHealthData! {
-                        let heartModel = HeartRate(rate: data.quantity.doubleValue(for: heartRateUnit), quantityType: "\(data.quantityType)", startDate: df.string(from: data.startDate), endDate: df.string(from: data.endDate), metadata: "\(data.metadata)", uuid: "\(data.uuid)", source: "\(data.source)", device: "\(data.device)")
-                        allHeartRateDataArray.append(heartModel)
+                // Going to be converting all dates to this value
+                let df = DateFormatter()
+                df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                var allHeartRateData: HealthKitData
+                var heightArrayData: [HeightData] = []
+                var heartRateArrayData: [HeartRate] = []
+                
+                // Get Height Data
+                self.getHeightData(completion: { (heightData) in
+                    // TODO: HEIGHT MODEL
+                    let heightUnit:HKUnit = HKUnit(from: "ft")
+                    var allHeightDataArray: [HeightData] = []
+                    
+                    for data in heightData! {
+                        let heightModel = HeightData(height: data.quantity.doubleValue(for: heightUnit), quantityType: "\(data.quantityType)", startDate: df.string(from: data.startDate), endDate: df.string(from: data.endDate), metadata: "\(data.metadata)", uuid: "\(data.uuid)", source: "\(data.source)", device: "\(data.device)")
+                        allHeightDataArray.append(heightModel)
                     }
-
-                    var allHeartRateData = HealthKitData(heartRateData: allHeartRateDataArray)
-                    
-                    print("---------\nAll Heart Data\n------------\n",allHeartRateData)
-                    
-                    
-                    let jsonData = try? JSONEncoder().encode(allHeartRateData)
-                    let jsonString = String(data: jsonData!, encoding: .utf8)!
-                    print("----------------\nData in JSON\n----------------\n",jsonString)
-                    
-                    // TODO: push data
-                    self.networkManager.postHeartData(jsonData!, { (response) in
-                        print(response)
-                    })
+                    print(allHeightDataArray)
                 })
+//                // Get Heart rate Data
+//                self.getHeartRateData(completion: { (arrayOfHealthData) in
+//                    print(arrayOfHealthData!)
+//                    let heartRateUnit:HKUnit = HKUnit(from: "count/min")
+//                    var allHeartRateDataArray: [HeartRate] = []
+//
+//                    for data in arrayOfHealthData! {
+//                        let heartModel = HeartRate(rate: data.quantity.doubleValue(for: heartRateUnit), quantityType: "\(data.quantityType)", startDate: df.string(from: data.startDate), endDate: df.string(from: data.endDate), metadata: "\(data.metadata)", uuid: "\(data.uuid)", source: "\(data.source)", device: "\(data.device)")
+//                        allHeartRateDataArray.append(heartModel)
+//                    }
+//
+//
+//
+//
+//
+//                    var allHeartRateData = HealthKitData(heartRateData: allHeartRateDataArray)
+//
+//                    print("---------\nAll Heart Data\n------------\n",allHeartRateData)
+//
+//
+//                    let jsonData = try? JSONEncoder().encode(allHeartRateData)
+//                    let jsonString = String(data: jsonData!, encoding: .utf8)!
+//                    print("----------------\nData in JSON\n----------------\n",jsonString)
+//
+//                    // TODO: push data
+//                    self.networkManager.postHeartData(jsonData!, { (response) in
+//                        print(response)
+//                    })
+//                })
+                
             }
         }
+        
     }
     
     
@@ -211,6 +250,28 @@ class MainViewController: UIViewController {
             
             DispatchQueue.main.async {
                 // Return Heart Rate data when done.
+                completion(samples)
+            }
+        })
+        // Runs the data query to get data
+        healthStore.execute(dataQuery)
+    }
+    
+    func getHeightData(completion: @escaping (_ heartRate: [HKQuantitySample]?) -> Void) {
+        /* Once Authorized to get data, this function will locate and pull the data. */
+        
+        // Tell what type of data it's looking for.
+        let dataQuery = HKSampleQuery.init(sampleType: HKObjectType.quantityType(forIdentifier: .height)!, predicate: nil, limit: HKObjectQueryNoLimit, sortDescriptors: nil, resultsHandler: { (sampleQuery, samplesOrNil, error) in
+            
+            // Check if data is of right type
+            guard let samples = samplesOrNil as? [HKQuantitySample] else {
+                print(error, "deosn't work as quantity type.")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                // Return Heart Rate data when done.
+                print("\n\n------------------\n\n[HEIGHT DATA]: \n\n", samples)
                 completion(samples)
             }
         })
