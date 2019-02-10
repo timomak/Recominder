@@ -47,7 +47,10 @@ class MainViewController: UIViewController {
     var health: Health?
     var networkManager = NetworkManager()
     let healthStore = HKHealthStore()
-    var allSamples:[HKSample] = []
+    
+    var heartRateArrayDataGlobal: [HeartRate] = []
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(text)
