@@ -218,16 +218,15 @@ class NetworkManager {
             guard let data = data else {
                 return completion(Result.failure(EndPointError.noData))
             }
-            print("data: ", data)
-//            // Attempt to decode the data.
+            // Attempt to decode the data.
             guard let result = try? JSONSerialization.jsonObject(with: data, options: []) else {
                 return completion(Result.failure(EndPointError.couldNotParse))
             }
             
             if let result = result as? [String: Any] {
-                print("\n\n------------------------\n\nResponse heart rate data: ",result)
+//                print("\n\n------------------------\n\nResponse heart rate data: ",result)
             }
-//
+
 //            if let result = result as? [String: Any] {
 //                print("response Login",result)
 //            }
