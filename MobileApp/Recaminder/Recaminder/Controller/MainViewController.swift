@@ -146,10 +146,10 @@ class MainViewController: UIViewController {
                     var restingHeartRateArrayData: [RestingHeartRateData] = []
                     var stepCountArrayData: [StepCountData] = []
                     
-                    let heartRateUnit:HKUnit = HKUnit(from: "count/min")
+                    let countPerMinute:HKUnit = HKUnit(from: "count/min")
                 
                     for data in arrayOfHealthData! {
-                        let heartModel = HeartRate(rate: data.quantity.doubleValue(for: heartRateUnit), quantityType: "\(data.quantityType)", startDate: df.string(from: data.startDate), endDate: df.string(from: data.endDate), metadata: "\(data.metadata)", uuid: "\(data.uuid)", source: "\(data.source)", device: "\(data.device)")
+                        let heartModel = HeartRate(rate: data.quantity.doubleValue(for: countPerMinute), quantityType: "\(data.quantityType)", startDate: df.string(from: data.startDate), endDate: df.string(from: data.endDate), metadata: "\(data.metadata)", uuid: "\(data.uuid)", source: "\(data.source)", device: "\(data.device)")
                         heartRateArrayData.append(heartModel)
                     }
                     
@@ -205,19 +205,41 @@ class MainViewController: UIViewController {
                                                 }
                                                 
                                                 self.getRespiratoryRateData(completion: { (respiratoryRateRawData) in
-                                                    let breaths:HKUnit = HKUnit(from: "count/min")
                                                     
                                                     for data in respiratoryRateRawData! {
-                                                        let respiratoryRateModel = RespiratoryRateData(value: data.quantity.doubleValue(for: breaths), quantityType: "\(data.quantityType)", startDate: df.string(from: data.startDate), endDate: df.string(from: data.endDate), metadata: "\(data.metadata)", uuid: "\(data.uuid)", source: "\(data.source)", device: "\(data.device)")
+                                                        let respiratoryRateModel = RespiratoryRateData(value: data.quantity.doubleValue(for: countPerMinute), quantityType: "\(data.quantityType)", startDate: df.string(from: data.startDate), endDate: df.string(from: data.endDate), metadata: "\(data.metadata)", uuid: "\(data.uuid)", source: "\(data.source)", device: "\(data.device)")
                                                         respiratoryRateArrayData.append(respiratoryRateModel)
                                                     }
                                                     self.getRestingHeartRateData(completion: { (restingHeartRateRawData) in
-                                                        print(restingHeartRateRawData)
-                                                        
+                                                        for data in restingHeartRateRawData! {
+                                                            let restingHeartRateModel = RestingHeartRateData(value: data.quantity.doubleValue(for: countPerMinute), quantityType: "\(data.quantityType)", startDate: df.string(from: data.startDate), endDate: df.string(from: data.endDate), metadata: "\(data.metadata)", uuid: "\(data.uuid)", source: "\(data.source)", device: "\(data.device)")
+                                                            restingHeartRateArrayData.append(restingHeartRateModel)
+                                                        }
                                                         self.getStepCountData(completion: { (stepCountRawData) in
-                                                            print(stepCountRawData)
-                                                        })
-                                                    })
+                                                            let count:HKUnit = HKUnit(from: "count")
+                                                            
+                                                            for data in stepCountRawData! {
+                                                                let stepCountModel = StepCountData(value: data.quantity.doubleValue(for: count), quantityType: "\(data.quantityType)", startDate: df.string(from: data.startDate), endDate: df.string(from: data.endDate), metadata: "\(data.metadata)", uuid: "\(data.uuid)", source: "\(data.source)", device: "\(data.device)")
+                                                                stepCountArrayData.append(stepCountModel)
+                                                            }
+                                                            // Code for the most inner nested to export all the data as JSON
+                                                            var healthKitData = HealthKitData(heartRateData: heartRateArrayData, heightData: heightArrayData, bloodPressureSystolicData: bloodPressureSystolicArrayData, bloodPressureDiastolicData: bloodPressureDiastolicArrayData, bodyMassData: bodyMassArrayData, bodyTemperatureData: bodyTemperatureArrayData, activeEnergyBurnedData: activeEnergyBurnedArrayData, leanBodyMassData: leanBodyMassArrayData, respiratoryRateData: respiratoryRateArrayData, restingHeartRateData: restingHeartRateArrayData, stepCountData: stepCountArrayData)
+                                                            
+                                                            let jsonData = try? JSONEncoder().encode(healthKitData)
+                                                            let jsonString = String(data: jsonData!, encoding: .utf8)!
+                                                            print("----------------\nData in JSON\n----------------\n",jsonString)
+                                                            
+                                                            // TODO: push data
+                                                            self.networkManager.postHeartData(jsonData!, { (response) in
+                                                                print(response)
+                                                                
+                                                                
+                                                            }) // End of pushing data to server
+
+                                                            
+                                                        }) // End of Step Count
+                                                        
+                                                    }) // End of Resting heart Rate
                                                     
                                                 }) // End of Respiratory Rate Data
                                                 
@@ -242,21 +264,6 @@ class MainViewController: UIViewController {
         } // End of Else statement
         
     }
-    
-//    // Code for the most inner nested to export all the data as JSON
-//    var healthKitData = HealthKitData(heartRateData: heartRateArrayData, heightData: heightArrayData, bloodPressureSystolicData: bloodPressureSystolicArrayData, bloodPressureDiastolicData: bloodPressureDiastolicArrayData, bodyMassData: bodyMassArrayData)
-//
-//    let jsonData = try? JSONEncoder().encode(healthKitData)
-//    let jsonString = String(data: jsonData!, encoding: .utf8)!
-//    print("----------------\nData in JSON\n----------------\n",jsonString)
-//
-//    // TODO: push data
-//    self.networkManager.postHeartData(jsonData!, { (response) in
-//    print(response)
-//
-//
-//    }) // End of pushing data to server
-
 
     @objc func allowHealthKitButtonPressed() {
         print("button pressed")
